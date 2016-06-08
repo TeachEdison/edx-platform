@@ -610,7 +610,6 @@ class @Problem
         else
           # Recreate the unanswered dot on left.
           $("<span>", {"class": "unanswered", "style": "display: inline-block;", "id": "status_#{id}"})
-
         $element.find("label").removeClass()
 
     'option-input': (element) ->
@@ -619,7 +618,7 @@ class @Problem
       $select.on 'change', ->
         $status = $("#status_#{id}")
           .removeClass().addClass("unanswered")
-          .find('span').text(gettext('Status: unsubmitted'))
+          .find('span.sr').text(gettext('Status: unsubmitted'))
 
     textline: (element) ->
       $(element).find('input').on 'input', ->

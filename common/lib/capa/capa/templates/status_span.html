@@ -1,0 +1,9 @@
+<%page expression_filter="h" args="status, classname, status_id"/>
+  % if status_id == '':
+    <span class="status ${classname}" data-tooltip="${status.display_tooltip}">
+  % else:
+    <span class="status ${classname}" id="status_${status_id}" data-tooltip="${status.display_tooltip}">
+  % endif
+  <span class="sr">${status.display_name}</span>
+  <span class="status-icon" aria-hidden="true"></span>
+</span>

@@ -4,13 +4,11 @@ Tests for the logic in input type mako templates.
 
 from collections import OrderedDict
 import unittest
-import capa
-import os.path
 import json
 from lxml import etree
-from mako.template import Template as MakoTemplate
 from mako import exceptions
 from capa.inputtypes import Status
+from capa.tests.helpers import capa_render_template
 from xmodule.stringify import stringify_children
 
 
@@ -23,7 +21,7 @@ class TemplateError(Exception):
 
 class TemplateTestCase(unittest.TestCase):
     """
-    Utilitites for testing templates.
+    Utilities for testing templates.
     """
 
     # Subclasses override this to specify the file name of the template
@@ -46,16 +44,9 @@ class TemplateTestCase(unittest.TestCase):
 
     def setUp(self):
         """
-        Load the template under test.
+        Initialize the context.
         """
         super(TemplateTestCase, self).setUp()
-        capa_path = capa.__path__[0]
-        self.template_path = os.path.join(capa_path,
-                                          'templates',
-                                          self.TEMPLATE_NAME)
-        with open(self.template_path) as f:
-            self.template = MakoTemplate(f.read(), default_filters=['decode.utf8'])
-
         self.context = {}
 
     def render_to_xml(self, context_dict):
@@ -66,7 +57,7 @@ class TemplateTestCase(unittest.TestCase):
         # add dummy STATIC_URL to template context
         context_dict.setdefault("STATIC_URL", "/dummy-static/")
         try:
-            xml_str = self.template.render_unicode(**context_dict)
+            xml_str = capa_render_template(self.TEMPLATE_NAME, context_dict)
         except:
             raise TemplateError(exceptions.text_error_template().render())
 
@@ -196,10 +187,10 @@ class TemplateTestCase(unittest.TestCase):
             # (used to by CSS to draw the green check / red x)
             self.assert_has_text(
                 xml,
-                "//span[@class=normalize-space('status {}')]/span[@class='sr']".format(
+                "//span[@class='status {}']/span[@class='sr']".format(
                     div_class if status_class else ''
                 ),
-                self.context['status'].display_tooltip
+                self.context['status'].display_name
             )
 
     def assert_label(self, xpath=None, aria_label=False):
@@ -930,7 +921,7 @@ class DragAndDropTemplateTest(TemplateTestCase):
             self.assert_has_xpath(xml, xpath, self.context)
 
             # Expect a <p> with the status
-            xpath = "//p[@class='status drag-and-drop--status']/span[@class='sr']"
+            xpath = "//span[@class='status {0}']/span[@class='sr']".format(expected_css_class)
             self.assert_has_text(xml, xpath, expected_text, exact=False)
 
     def test_drag_and_drop_json_html(self):

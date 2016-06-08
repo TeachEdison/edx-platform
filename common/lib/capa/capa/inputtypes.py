@@ -325,12 +325,13 @@ class InputTypeBase(object):
             'describedby_html': '',
         }
 
-        # Don't add aria-describedby attribute if there are no descriptions
-        if self.response_data.get('descriptions'):
-            description_ids = ' '.join(self.response_data.get('descriptions').keys())
-            context.update(
-                {'describedby_html': 'aria-describedby="{}"'.format(description_ids)}
-            )
+        status_id = 'status_' + self.input_id
+        descriptions = list([status_id])
+        descriptions.extend(self.response_data.get('descriptions', {}).keys())
+        description_ids = ' '.join(descriptions)
+        context.update(
+            {'describedby_html': 'aria-describedby="{}"'.format(description_ids)}
+        )
 
         context.update(
             (a, v) for (a, v) in self.loaded_attributes.iteritems() if a in self.to_render

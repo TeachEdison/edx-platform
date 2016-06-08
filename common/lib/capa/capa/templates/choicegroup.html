@@ -50,7 +50,9 @@
 
                 % if is_radio_input(choice_id):
                   % if status in ('correct', 'partially-correct', 'incorrect') and not show_correctness == 'never':
-                    <span class="sr status" id="${id}-${choice_id}-labeltext">${status.display_name}</span>
+                    <%include file="status_span.html" args="status=status,
+                      classname=status.classname if show_correctness != 'never' else 'unanswered',
+                      status_id=id"/>
                   % endif
                 % endif
             </label>
@@ -60,9 +62,9 @@
     </fieldset>
     <div class="indicator-container">
         % if input_type == 'checkbox' or not value:
-            <span class="status ${status.classname if show_correctness != 'never' else 'unanswered'}" id="status_${id}" aria-describedby="${id}-legend" data-tooltip="${status.display_tooltip}">
-                <span class="sr">${status.display_tooltip}</span>
-            </span>
+            <%include file="status_span.html" args="status=status,
+              classname=status.classname if show_correctness != 'never' else 'unanswered',
+              status_id=id"/>
         % endif
     </div>
     % if show_correctness == "never" and (value or status not in ['unsubmitted']):
