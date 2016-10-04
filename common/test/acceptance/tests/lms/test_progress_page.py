@@ -8,14 +8,13 @@ from contextlib import contextmanager
 
 import ddt
 
-from ..helpers import UniqueCourseTest, auto_auth, create_multiple_choice_problem
+from ..helpers import UniqueCourseTest, auto_auth, create_multiple_choice_problem, get_modal_alert
 from ...fixtures.course import CourseFixture, XBlockFixtureDesc
 from ...pages.common.logout import LogoutPage
 from ...pages.lms.courseware import CoursewarePage
-from ...pages.lms.instructor_dashboard import InstructorDashboardPage
+from ...pages.lms.instructor_dashboard import InstructorDashboardPage, StudentSpecificAdmin
 from ...pages.lms.problem import ProblemPage
 from ...pages.lms.progress import ProgressPage
-from ...pages.lms.staff_view import StaffPage, StaffDebugPage
 from ...pages.studio.component_editor import ComponentEditorView
 from ...pages.studio.utils import type_in_codemirror
 from ...pages.studio.overview import CourseOutlinePage
@@ -193,21 +192,18 @@ class PersistentGradesTest(ProgressPageBaseTest):
             type_in_codemirror(self, 0, modified_content)
             modal.q(css='.action-save').click()
 
-    def _delete_student_state_for_problem(self):
+    def _adjust_student_grade_for_problem(self, admin_button):
         """
-        As staff, clicks the "delete student state" button,
-        deleting the student user's state for the problem.
+        As staff, clicks the requested admin button.
         """
         with self._logged_in_session(staff=True):
-            self.courseware_page.visit()
-            staff_page = StaffPage(self.browser, self.course_id)
-            self.assertEqual(staff_page.staff_view_mode, "Staff")
-            staff_page.q(css='a.instructor-info-action').nth(1).click()
-            staff_debug_page = StaffDebugPage(self.browser)
-            staff_debug_page.wait_for_page()
-            staff_debug_page.delete_state(self.USERNAME)
-            msg = staff_debug_page.idash_msg[0]
-            self.assertEqual(u'Successfully deleted student state for user {0}'.format(self.USERNAME), msg)
+            instructor_dashboard_page = InstructorDashboardPage(self.browser, self.course_id)
+            instructor_dashboard_page.visit()
+            student_admin_section = instructor_dashboard_page.select_student_admin(StudentSpecificAdmin)
+            student_admin_section.set_student_email_or_username(self.USERNAME)
+            getattr(student_admin_section, admin_button).click()
+            alert = get_modal_alert(student_admin_section.browser)
+            alert.dismiss()
 
     @ddt.data(
         _edit_problem_content,
@@ -240,12 +236,23 @@ class PersistentGradesTest(ProgressPageBaseTest):
             self.assertEqual(self._get_problem_scores(), [(1, 1), (0, 1)])
             self.assertEqual(self._get_section_score(), (1, 2))
 
-    def test_progress_page_updates_when_student_state_deleted(self):
+    @ddt.data(
+        ('delete_state_button', [(0, 1), (0, 1)], (0, 2)),
+        ('rescore_button', [(0, 1), (0, 5)], (0, 6)),
+        ('rescore_if_higher_button', [(1, 1), (0, 1)], (1, 2)),
+    )
+    @ddt.unpack
+    def test_grade_update_when_student_state_deleted(
+        self,
+        admin_button,
+        expected_problem_scores,
+        expected_section_score,
+    ):
         self._check_progress_page_with_scored_problem()
-        self._delete_student_state_for_problem()
+        self._adjust_student_grade_for_problem(admin_button)
         with self._logged_in_session():
-            self.assertEqual(self._get_problem_scores(), [(0, 1), (0, 1)])
-            self.assertEqual(self._get_section_score(), (0, 2))
+            self.assertEqual(self._get_problem_scores(), expected_problem_scores)
+            self.assertEqual(self._get_section_score(), expected_section_score)
 
 
 class SubsectionGradingPolicyTest(ProgressPageBaseTest):

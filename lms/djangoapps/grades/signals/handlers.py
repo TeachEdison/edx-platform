@@ -116,5 +116,7 @@ def recalculate_subsection_grade_handler(sender, **kwargs):  # pylint: disable=u
             collected_block_structure=collected_block_structure,
         )
         subsection_grade_factory.update(
-            transformed_subsection_structure[subsection_usage_key], transformed_subsection_structure
+            transformed_subsection_structure[subsection_usage_key],
+            transformed_subsection_structure,
+            kwargs.get('only_if_higher'),
         )
