@@ -189,7 +189,7 @@ class JavascriptInputTest(unittest.TestCase):
         the_input = lookup_tag('javascriptinput')(test_capa_system(), element, state)
 
         context = the_input._get_render_context()  # pylint: disable=protected-access
-        prob_id='prob_1_2'
+        prob_id = 'prob_1_2'
         expected = {
             'STATIC_URL': '/dummy-static/',
             'id': prob_id,
