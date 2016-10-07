@@ -922,12 +922,10 @@ div.problem .action {
   min-height: $baseline;
 
   .problem-action-buttons-wrapper {
-    margin-bottom: $baseline / 2;
 
     @media (min-width: $bp-screen-lg) {
-      @include right($baseline * 1.5);
-      margin-top: -$baseline / 2;
-      position: absolute;
+      @include text-align(right);
+      @include float(right);
     }
 
   }
@@ -956,25 +954,28 @@ div.problem .action {
 
   }
 
+  .submit-attempt-container {
+    max-width: 44%;
+
+    @media (max-width: $bp-screen-lg) {
+      max-width: 100%;
+      padding-top: $baseline;
+    }
+    .submit {
+      @include margin-right($baseline / 2);
+      float: left;
+    }
+  }
+
   .submission_feedback {
-    @include margin-left($baseline/2);
     display: inline-block;
+    margin-top: $baseline / 2;
     color: $gray-d1;
     font-size: $medium-font-size;
     -webkit-font-smoothing: antialiased;
     vertical-align: middle;
-
-    @media (min-width: $bp-screen-lg) and (max-width: $bp-screen-xl) {
-      @include margin-left(0);
-      margin-top: $baseline / 2;
-      display: block;
-    }
-
-    @media (min-width: $bp-screen-xl) {
-      max-width: flex-grid(3, 10);
-    }
-
   }
+
 }
 
 
