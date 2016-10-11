@@ -1,5 +1,6 @@
 define([
     'edx-ui-toolkit/js/utils/string-utils',
+    'edx-ui-toolkit/js/utils/date-utils',
     'edx-ui-toolkit/js/utils/html-utils',
     'domReady!',
     'jquery',
