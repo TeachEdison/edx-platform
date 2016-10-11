@@ -74,7 +74,7 @@ NewPostView */
                 this.toggleDiscussionBtn = this.$('.discussion-show');
                 match = this.page_re.exec(window.location.href);
                 this.context = options.context || 'course';
-                this.readOnly = options.readOnly;
+                this.readOnly = $('.discussion-module').data('read-only');
                 if (match) {
                     this.page = parseInt(match[1]);
                 } else {

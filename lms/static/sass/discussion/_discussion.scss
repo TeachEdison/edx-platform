@@ -311,7 +311,8 @@ body.discussion {
   .inline-discussion-topic {
     width: flex-grid(12);
     font-size: $forum-small-font-size;
-    .inline-discussion-topic__title {
+
+    .inline-discussion-topic-title {
       font-weight: bold;
     }
   }

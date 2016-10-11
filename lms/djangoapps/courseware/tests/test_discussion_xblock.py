@@ -227,6 +227,7 @@ class TestTemplates(TestDiscussionXBlock):
     @ddt.data(
         (True, True, True),
         (True, True, False),
+        (True, False, True),
         (True, False, False),
         (False, True, True),
         (False, True, False),

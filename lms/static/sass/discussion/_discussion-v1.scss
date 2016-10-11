@@ -18,7 +18,7 @@
     box-shadow: none;
     height: 40px;
     text-shadow: none;
-    font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif; // without this, it would fallback to lms button tag style
+    font-family: $f-sans-serif; // without this, it would fallback to lms button tag style
     font-size: 14px;
     font-weight: 600;
     word-wrap: break-word;
