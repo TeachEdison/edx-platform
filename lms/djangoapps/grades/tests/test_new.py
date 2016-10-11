@@ -381,3 +381,109 @@ class TestMultipleProblemTypesSubsectionScores(ModuleStoreTestCase, ProblemSubmi
         score = self._get_score_with_alterations(alterations)
         self.assertEqual(score.all_total.earned, expected_earned)
         self.assertEqual(score.all_total.possible, expected_possible)
+
+
+class TestCourseGradeLogging(SharedModuleStoreTestCase):
+    """
+    Tests logging in the course grades module.
+    Uses a larger course structure than other
+    unit tests.
+    """
+    @classmethod
+    def setUpClass(cls):
+        super(TestCourseGradeLogging, cls).setUpClass()
+        cls.course = CourseFactory.create()
+        cls.chapter = ItemFactory.create(
+            parent=cls.course,
+            category="chapter",
+            display_name="Test Chapter"
+        )
+        cls.sequence = ItemFactory.create(
+            parent=cls.chapter,
+            category='sequential',
+            display_name="Test Sequential 1",
+            graded=True
+        )
+        cls.sequence_2 = ItemFactory.create(
+            parent=cls.chapter,
+            category='sequential',
+            display_name="Test Sequential 2",
+            graded=True
+        )
+        cls.sequence_3 = ItemFactory.create(
+            parent=cls.chapter,
+            category='sequential',
+            display_name="Test Sequential 3",
+            graded=False
+        )
+        cls.vertical = ItemFactory.create(
+            parent=cls.sequence,
+            category='vertical',
+            display_name='Test Vertical 1'
+        )
+        cls.vertical_2 = ItemFactory.create(
+            parent=cls.sequence_2,
+            category='vertical',
+            display_name='Test Vertical 2'
+        )
+        cls.vertical_3 = ItemFactory.create(
+            parent=cls.sequence_3,
+            category='vertical',
+            display_name='Test Vertical 3'
+        )
+        problem_xml = MultipleChoiceResponseXMLFactory().build_xml(
+            question_text='The correct answer is Choice 3',
+            choices=[False, False, True, False],
+            choice_names=['choice_0', 'choice_1', 'choice_2', 'choice_3']
+        )
+        cls.problem = ItemFactory.create(
+            parent=cls.vertical,
+            category="problem",
+            display_name="Test Problem 1",
+            data=problem_xml
+        )
+        cls.problem_2 = ItemFactory.create(
+            parent=cls.vertical_2,
+            category="problem",
+            display_name="Test Problem 2",
+            data=problem_xml
+        )
+        cls.problem_3 = ItemFactory.create(
+            parent=cls.vertical_3,
+            category="problem",
+            display_name="Test Problem 3",
+            data=problem_xml
+        )
+
+    def setUp(self):
+        super(TestCourseGradeLogging, self).setUp()
+        self.request = get_request_for_user(UserFactory())
+        self.client.login(username=self.request.user.username, password="test")
+        self.course_structure = get_course_blocks(self.request.user, self.course.location)
+        self.subsection_grade_factory = SubsectionGradeFactory(self.request.user, self.course, self.course_structure)
+        CourseEnrollment.enroll(self.request.user, self.course.id)
+
+    def test_course_grade_logging(self):
+        grade_factory = CourseGradeFactory(self.request.user)
+        with persistent_grades_feature_flags(
+            global_flag=True,
+            enabled_for_all_courses=False,
+            course_id=self.course.id,
+            enabled_for_course=True
+        ):
+            with patch('lms.djangoapps.grades.new.course_grade.log') as log_mock:
+                grade_factory.create(self.course)
+                log_mock.warning.assert_called_with(
+                    u"Persistent Grades: CourseGrade.{0}, course: {1}, user: {2}".format(
+                        u"compute_and_update, read_only: {0}, subsections read/created: {1}/{2}, blocks accessed: {3}, "
+                        u"total graded subsections: {4}".format(
+                            False,
+                            0,
+                            3,
+                            3,
+                            2,
+                        ),
+                        unicode(self.course.id),
+                        unicode(self.request.user.id),
+                    )
+                )
