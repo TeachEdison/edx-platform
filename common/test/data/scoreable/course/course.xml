@@ -1,0 +1,5 @@
+<course advanced_modules="[&quot;lti&quot;, &quot;lti_consumer&quot;, &quot;library_content&quot;, &quot;split_test&quot;, &quot;conditional&quot;, &quot;randomize&quot;, &quot;drag-and-drop-v2&quot;, &quot;library&quot;, &quot;videosequence&quot;, &quot;problemset&quot;, &quot;acid_parent&quot;, &quot;done&quot;, &quot;wrapper&quot;, &quot;edx_sga&quot;, &quot;bookmarks&quot;]" cert_html_view_enabled="true" display_name="Introduction to problems." language="en" start="&quot;2030-01-01T00:00:00+00:00&quot;">
+  <chapter url_name="5402ebc7862541b08854ed75eeef8a48"/>
+  <chapter url_name="a4080af72ef044f1b104969f4f829c5b"/>
+  <wiki slug="edX.jcd101.2016-10-11"/>
+</course>
