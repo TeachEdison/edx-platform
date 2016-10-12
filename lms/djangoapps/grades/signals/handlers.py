@@ -35,12 +35,14 @@ def submissions_score_set_handler(sender, **kwargs):  # pylint: disable=unused-a
     course_id = kwargs['course_id']
     usage_id = kwargs['item_id']
     user = user_by_anonymous_id(kwargs['anonymous_user_id'])
+    if user is None:
+        return
 
     SCORE_CHANGED.send(
         sender=None,
         points_possible=points_possible,
         points_earned=points_earned,
-        user=user,
+        user_id=user.id,
         course_id=course_id,
         usage_id=usage_id
     )
@@ -63,12 +65,14 @@ def submissions_score_reset_handler(sender, **kwargs):  # pylint: disable=unused
     course_id = kwargs['course_id']
     usage_id = kwargs['item_id']
     user = user_by_anonymous_id(kwargs['anonymous_user_id'])
+    if user is None:
+        return
 
     SCORE_CHANGED.send(
         sender=None,
         points_possible=0,
         points_earned=0,
-        user=user,
+        user_id=user.id,
         course_id=course_id,
         usage_id=usage_id
     )
@@ -79,11 +83,10 @@ def enqueue_subsection_update(sender, **kwargs):  # pylint: disable=unused-argum
     """
     Handles the SCORE_CHANGED signal by enqueueing a subsection update to occur asynchronously.
     """
-    kwargs.update({'user': kwargs['user'].id})  # all task inputs need to be serializable
     kwargs.pop('signal', None)  # This value is not needed by the task and cannot be serialized properly
     log.info(
-        "Enqueueing task for subsection grade update. user: {}, course_id: {}, usage_id: {}".format(
-            kwargs['user'],
+        "Enqueueing task for subsection grade update. user_id: {}, course_id: {}, usage_id: {}".format(
+            kwargs['user_id'],
             kwargs['course_id'],
             kwargs['usage_id']
         )

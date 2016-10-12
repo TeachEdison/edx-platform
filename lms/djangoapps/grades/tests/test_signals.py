@@ -77,7 +77,7 @@ class SubmissionSignalRelayTest(TestCase):
             'sender': None,
             'points_possible': possible,
             'points_earned': earned,
-            'user': self.user_mock,
+            'user_id': self.user_mock.id,
             'course_id': 'CourseID',
             'usage_id': 'i4x://org/course/usage/123456'
         }

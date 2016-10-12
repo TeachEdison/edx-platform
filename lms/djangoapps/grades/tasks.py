@@ -30,7 +30,7 @@ def recalculate_subsection_grade(**kwargs):  # pylint: disable=unused-argument
     if not PersistentGradesEnabledFlag.feature_enabled(course_key):
         return
 
-    student = User.objects.get(id=kwargs['user'])
+    student = User.objects.get(id=kwargs['user_id'])
     scored_block_usage_key = UsageKey.from_string(kwargs['usage_id']).replace(course_key=course_key)
 
     collected_block_structure = get_course_in_cache(course_key)

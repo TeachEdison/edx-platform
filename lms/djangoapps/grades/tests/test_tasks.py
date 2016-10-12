@@ -49,7 +49,7 @@ class RecalculateSubsectionGradeTest(ModuleStoreTestCase):
         self.score_changed_kwargs = {
             'points_possible': 10,
             'points_earned': 5,
-            'user': self.user.id,
+            'user_id': self.user.id,
             'course_id': unicode(self.course.id),
             'usage_id': unicode(self.problem.location),
         }
@@ -67,12 +67,8 @@ class RecalculateSubsectionGradeTest(ModuleStoreTestCase):
             'lms.djangoapps.grades.tasks.recalculate_subsection_grade.apply_async',
             return_value=None
         ) as mock_task_apply:
-            # This test checks the signal prep and send, so we need to "undo" the preprocessing done in set_up_course
-            initial_kwargs = self.score_changed_kwargs.copy()
-            self.score_changed_kwargs.update({'user': self.user})
-
             SCORE_CHANGED.send(sender=None, **self.score_changed_kwargs)
-            mock_task_apply.assert_called_once_with(kwargs=initial_kwargs)
+            mock_task_apply.assert_called_once_with(kwargs=self.score_changed_kwargs)
 
     @ddt.data(ModuleStoreEnum.Type.mongo, ModuleStoreEnum.Type.split)
     def test_subsection_grade_updated(self, default_store):
@@ -125,7 +121,7 @@ class RecalculateSubsectionGradeTest(ModuleStoreTestCase):
             with check_mongo_calls(0) and self.assertNumQueries(3 if feature_flag else 2):
                 recalculate_subsection_grade.apply(throw=True, kwargs=self.score_changed_kwargs)
 
-    @ddt.data('user', 'course_id', 'usage_id')
+    @ddt.data('user_id', 'course_id', 'usage_id')
     def test_missing_kwargs(self, kwarg):
         self.set_up_course()
         self.assertTrue(PersistentGradesEnabledFlag.feature_enabled(self.course.id))
