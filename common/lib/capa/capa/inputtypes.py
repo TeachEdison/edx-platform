@@ -325,6 +325,8 @@ class InputTypeBase(object):
             'describedby_html': '',
         }
 
+        # Generate the list of ids to be used with the aria-describedby field.
+        # Every list should contain the status id
         status_id = 'status_' + self.input_id
         descriptions = list([status_id])
         descriptions.extend(self.response_data.get('descriptions', {}).keys())

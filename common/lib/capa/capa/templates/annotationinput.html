@@ -22,23 +22,10 @@
     % for option in options:
         <li>
             % if has_options_value:
-                % if all([c == 'correct' for c in option['choice'], status]):
+                % if all([c == status.classname for c in option['choice'], status]):
                 <span class="tag-status correct" aria-describedby="input_${id}_comment">
                     <%include file="status_span.html" args="status=status,
-                    classname=status.classname,
-                    status_id=''"/>
-                </span>
-                % elif all([c == 'partially-correct' for c in option['choice'], status]):
-                <span class="tag-status partially-correct" aria-describedby="input_${id}_comment">
-                    <%include file="status_span.html" args="status=status,
-                    classname=status.classname,
-                    status_id=''"/>
-                </span>
-                % elif all([c == 'incorrect' for c in option['choice'], status]):
-                <span class="tag-status incorrect" aria-describedby="input_${id}_comment">
-                    <%include file="status_span.html" args="status=status,
-                    classname=status.classname,
-                    status_id=''"/>
+                    classname=status.classname"/>
                 </span>
                 % endif
             % endif

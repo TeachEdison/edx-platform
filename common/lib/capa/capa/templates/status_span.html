@@ -1,4 +1,4 @@
-<%page expression_filter="h" args="status, classname, status_id"/>
+<%page expression_filter="h" args="status, classname='', status_id=''"/>
   % if status_id == '':
     <span class="status ${classname}" data-tooltip="${status.display_tooltip}">
   % else:
