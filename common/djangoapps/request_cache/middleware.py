@@ -94,8 +94,7 @@ def request_cached(f):
         cache_key = '.'.join(cache_keys)
 
         # Check to see if we have a result in cache.  If not, invoke our wrapped
-        # function.  If the result of that function call isn't None, then cache it.
-        # Regardless, return the result to the caller.
+        # function.  Cache and return the result to the caller.
         rcache = RequestCache.get_request_cache()
 
         cached_result = rcache.data.get(cache_key)
