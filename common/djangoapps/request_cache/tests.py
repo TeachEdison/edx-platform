@@ -59,11 +59,6 @@ class TestRequestCache(TestCase):
         self.assertEqual(result, 42)
         self.assertEqual(to_be_wrapped.call_count, 1)
 
-        to_be_wrapped.return_value = 43
-        result = wrapped()
-        self.assertEqual(result, 42)
-        self.assertEqual(to_be_wrapped.call_count, 1)
-
     def test_request_cached_with_caches_despite_changing_wrapped_result(self):
         """
         Ensure that after caching a result, we always send it back, even if the underlying result changes.
