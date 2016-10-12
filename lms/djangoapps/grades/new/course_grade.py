@@ -128,8 +128,9 @@ class CourseGrade(object):
         for chapter_key in self.course_structure.get_children(self.course.location):
             chapter = self.course_structure[chapter_key]
             chapter_subsection_grades = []
-            for subsection_key in self.course_structure.get_children(chapter_key):
-                subsections_total += 1
+            children = self.course_structure.get_children(chapter_key)
+            subsections_total += len(children)
+            for subsection_key in children:
                 chapter_subsection_grades.append(
                     subsection_grade_factory.create(self.course_structure[subsection_key], read_only=True)
                 )
