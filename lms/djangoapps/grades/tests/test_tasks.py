@@ -14,6 +14,7 @@ from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory, check_mongo_calls
 
 from lms.djangoapps.grades.config.models import PersistentGradesEnabledFlag
+from lms.djangoapps.grades.signals.signals import SCORE_CHANGED
 from lms.djangoapps.grades.tasks import recalculate_subsection_grade
 
 
@@ -57,8 +58,24 @@ class RecalculateSubsectionGradeTest(ModuleStoreTestCase):
         _ = anonymous_id_for_user(self.user, self.course.id)
         # pylint: enable=attribute-defined-outside-init,no-member
 
+    def test_score_changed_signal_queues_task(self):
+        """
+        Ensures that the SCORE_CHANGED signal enqueues a recalculate subsection grade task.
+        """
+        self.set_up_course()
+        with patch(
+            'lms.djangoapps.grades.tasks.recalculate_subsection_grade.apply_async',
+            return_value=None
+        ) as mock_task_apply:
+            # This test checks the signal prep and send, so we need to "undo" the preprocessing done in set_up_course
+            initial_kwargs = self.score_changed_kwargs.copy()
+            self.score_changed_kwargs.update({'user': self.user})
+
+            SCORE_CHANGED.send(sender=None, **self.score_changed_kwargs)
+            mock_task_apply.assert_called_once_with(kwargs=initial_kwargs)
+
     @ddt.data(ModuleStoreEnum.Type.mongo, ModuleStoreEnum.Type.split)
-    def test_subsection_grade_updated_on_signal(self, default_store):
+    def test_subsection_grade_updated(self, default_store):
         with self.store.default_store(default_store):
             self.set_up_course()
             self.assertTrue(PersistentGradesEnabledFlag.feature_enabled(self.course.id))
