@@ -31,7 +31,6 @@
 
         transform = function(iterationKey) {
             var context;
-
             $(iterationKey).each(function() {
                 if (isValid($(this).data('datetime'))) {
                     context = {

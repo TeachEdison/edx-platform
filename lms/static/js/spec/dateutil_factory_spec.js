@@ -37,6 +37,7 @@ define(['../dateutil_factory.js'], function(DateUtilIterator) {
                     $form.attr('lang', String(key));
                     $(document.body).append($form);
 
+                    DateUtilIterator.transform(iterationKey);
                     expect($form.text()).toEqual(TestLangs[key]);
 
                     $form.remove();
