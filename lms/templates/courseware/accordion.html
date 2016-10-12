@@ -33,9 +33,6 @@ else:
                         span_end=HTML('</span>'),
                     ) if 'active' in section and section['active'] else ''}</p>
 
-                ## TEMP COMMENT
-                ## The following is the legacy date approach, supplanted at end of template by the dateutil helper
-                ## which utilizes HTML5 data elements and the lang tag (per a11y feedback)
                 <%
                 if section.get('due') is None:
                     due_date = ''
@@ -64,12 +61,18 @@ else:
 
                             ## TEMP COMMENT
                             ## Note the addition of data elements data-timezone, data-datetime, and data-lang
-                            <span class="subtitle-name localized-datetime" lang="${language}" data-timezone="${time_zone}" data-datetime="${section['due']}" data-string="Due">${due_date}</span>
+                            <%
+                                translated_string = _("due {date}").format(date='')
+                            %>
+                            <span class="subtitle-name localized-datetime" lang="${language}" data-timezone="${time_zone}" data-datetime="${section['due']}" data-string="{translated_string}">${due_date}</span>
                         % endif
                     % else:
                         ## non-proctored section, we just show the exam format and the due date
                         ## this is the standard case in edx-platform
-                        <span class="subtitle-name localized-datetime" lang="${language}" data-timezone="${time_zone}" data-datetime="${section['due']}" data-string="Due">${due_date}</span>
+                        <%
+                            translated_string = _('due {date}').format(date='')
+                        %>
+                        <span class="subtitle-name localized-datetime" lang="${language}" data-timezone="${time_zone}" data-datetime="${section['due']}" data-string="${translated_string}">${due_date}</span>
                         ## <!-- data-string="${section.format}"-->
 
                         % if 'graded' in section and section['graded']:
@@ -94,9 +97,5 @@ else:
 % if toc:
     <%static:require_module_async module_name="js/courseware/accordion_events" class_name="AccordionEvents">
         AccordionEvents();
-    </%static:require_module_async>
-
-    <%static:require_module_async module_name="js/dateutil_factory" class_name="DateUtilFactory">
-        DateUtilFactory.transform(iterationKey='.localized-datetime');
     </%static:require_module_async>
 % endif

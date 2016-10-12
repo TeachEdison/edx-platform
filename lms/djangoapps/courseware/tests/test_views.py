@@ -919,7 +919,6 @@ class ViewsTestCase(ModuleStoreTestCase):
         )
 
         # removes newlines and whitespace from the returned view string
-        # add language preference, default is fine.
         view = ''.join(render_accordion(request, self.course, table_of_contents['chapters'], 'en').split())
         # the course id unicode is re-encoded here because the quote function does not accept unicode
         course_id = quote(unicode(self.course.id).encode("utf-8"))

@@ -402,7 +402,7 @@ class CoursewareIndex(View):
             self.request,
             self.course,
             table_of_contents['chapters'],
-            courseware_context['language_preference']
+            courseware_context['language_preference'],
         )
 
         # entrance exam data
@@ -512,7 +512,7 @@ def render_accordion(request, course, table_of_contents, language_preference):
             ('csrf', csrf(request)['csrf_token']),
             ('due_date_display_format', course.due_date_display_format),
             ('time_zone', request.user.preferences.model.get_value(request.user, "time_zone", None)),
-            ('language', language_preference)
+            ('language', language_preference),
 
         ] + TEMPLATE_IMPORTS.items()
     )

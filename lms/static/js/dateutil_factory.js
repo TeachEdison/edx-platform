@@ -1,13 +1,12 @@
 
 /**
  *
- * A helper function to utilize DateUtils quickly in iterative display templates.
+ * A helper function to utilize DateUtils quickly in display templates.
  *
  * @param: {string} data-datetime A pre-localized datetime string, assumed to be in UTC.
- * @param: {string} data-timezone (optional) A user-set timezone preference.
  * @param: {string} lang The user's preferred language.
+ * @param: {string} data-timezone (optional) A user-set timezone preference.
  * @param: {object} data-format (optional) a format constant as defined in DataUtil.dateFormatEnum.
- *
  * @param: {string} data-string (optional) a string for parsing through StringUtils after localizing
  * datetime
  *
@@ -23,8 +22,7 @@
         'edx-ui-toolkit/js/utils/date-utils',
         'edx-ui-toolkit/js/utils/string-utils'
     ], function($, DateUtils, StringUtils) {
-    //     return function() {
-        var DateUtilIterator;
+        var DateUtilFactory;
         var localizedTime;
         var stringHandler;
         var displayDatetime;
@@ -46,23 +44,9 @@
                         localizedTime(context),
                         $(this).data('string')
                     );
-                    /*
-                    to show the prototype in action, check the console
-                    */
-                    /* eslint-disable no-alert, no-console */
-                    console.log(displayDatetime);
-                    /* eslint-enable no-alert, no-console */
-
-                    /*
-                    uncomment the following line once approved
-                    */
-                    // $(this).text(displayDatetime);
-                    // return displayDatetime;
+                    $(this).text(displayDatetime);
                 }
             });
-
-            // COMMENT THIS OUT ONCE FEATURE IS READY
-            return displayDatetime;
         };
 
         localizedTime = function(context) {
@@ -91,12 +75,11 @@
                 && candidateVariable !== 'Invalid date'
                 && candidateVariable !== 'None';
         };
-        DateUtilIterator = {
+        DateUtilFactory = {
             transform: transform,
-            stringHandler: stringHandler,
-            displayDatetime: displayDatetime
+            stringHandler: stringHandler
         };
-        return DateUtilIterator;
+        return DateUtilFactory;
     });
 }).call(this, define || RequireJS.define);
 

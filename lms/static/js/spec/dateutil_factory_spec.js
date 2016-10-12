@@ -17,7 +17,6 @@ define(['../dateutil_factory.js'], function(DateUtilIterator) {
 
         describe('transform', function() {
             var $form;
-            var displayDatetime;
 
             it('localizes some times', function() {
                 /* we have to generate a fake span and then test the resultant texts */
@@ -37,13 +36,8 @@ define(['../dateutil_factory.js'], function(DateUtilIterator) {
                 Object.keys(TestLangs).forEach(function(key) {
                     $form.attr('lang', String(key));
                     $(document.body).append($form);
-                    displayDatetime = DateUtilIterator.transform(iterationKey);
 
-                    // Comment me out when deployed
-                    expect(displayDatetime).toEqual(TestLangs[key]);
-
-                    // Uncomment me when deployed
-                    // expect(form.text()).toEqual(TestLangs[key]);
+                    expect($form.text()).toEqual(TestLangs[key]);
 
                     $form.remove();
                 });

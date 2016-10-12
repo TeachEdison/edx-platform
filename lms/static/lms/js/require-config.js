@@ -57,8 +57,8 @@
         paths: {
             'annotator_1.2.9': 'js/vendor/edxnotes/annotator-full.min',
             'date': 'js/vendor/date',
-            'moment': 'common/js/vendor/moment-with-locales.min',
-            'moment-timezone': 'common/js/vendor/moment-timezone-with-data.min',
+            moment: 'common/js/vendor/moment-with-locales',
+            'moment-timezone': 'common/js/vendor/moment-timezone-with-data',
             'text': 'js/vendor/requirejs/text',
             'logger': 'js/src/logger',
             'backbone': 'common/js/vendor/backbone',
@@ -212,10 +212,6 @@
             'moment': {
                 exports: 'moment'
             },
-            // 'moment-with-locales': {
-            //     exports: 'moment',
-            //     deps: ['moment']
-            // },
             'moment-timezone': {
                 exports: 'moment',
                 deps: ['moment']
