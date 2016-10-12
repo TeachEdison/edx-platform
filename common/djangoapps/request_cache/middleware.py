@@ -103,8 +103,7 @@ def request_cached(f):
             return cached_result
         else:
             result = f(*args, **kwargs)
-            if result:
-                rcache.data[cache_key] = result
+            rcache.data[cache_key] = result
 
             return result
 
