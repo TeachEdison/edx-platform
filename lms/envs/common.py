@@ -2124,6 +2124,9 @@ INSTALLED_APPS = (
 
     # additional release utilities to ease automation
     'release_util',
+
+    # enterprise app TODO: move into dedicated repo
+    'openedx.core.djangoapps.enterprise',
 )
 
 # Migrations which are not in the standard module "migrations"
