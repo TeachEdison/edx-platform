@@ -126,10 +126,15 @@ class TestRequestCache(TestCase):
         self.assertEqual(direct_result, 3)
         self.assertEqual(to_be_wrapped.call_count, 3)
 
-        # This will be a hit, and not make an underlying call.
+        # These will be hits, and not make an underlying call.
+        result = wrapped(1)
+        self.assertEqual(result, 1)
+        self.assertEqual(to_be_wrapped.call_count, 3)
+
         result = wrapped(2)
         self.assertEqual(result, 2)
         self.assertEqual(to_be_wrapped.call_count, 3)
+
 
     def test_request_cached_with_changing_kwargs(self):
         """
@@ -154,7 +159,7 @@ class TestRequestCache(TestCase):
         self.assertEqual(to_be_wrapped.call_count, 1)
 
         # This will be a miss, and make an underlying call.
-        result = wrapped(1, foo=2)
+        result = wrapped(2, foo=2)
         self.assertEqual(result, 2)
         self.assertEqual(to_be_wrapped.call_count, 2)
 
@@ -163,7 +168,16 @@ class TestRequestCache(TestCase):
         self.assertEqual(direct_result, 3)
         self.assertEqual(to_be_wrapped.call_count, 3)
 
-        # This will be a hit, and not make an underlying call.
-        result = wrapped(1, foo=2)
+        # These will be hits, and not make an underlying call.
+        result = wrapped(1, foo=1)
+        self.assertEqual(result, 1)
+        self.assertEqual(to_be_wrapped.call_count, 3)
+
+        result = wrapped(2, foo=2)
         self.assertEqual(result, 2)
         self.assertEqual(to_be_wrapped.call_count, 3)
+
+        # Since we're changing foo, this will ne a miss.
+        result = wrapped(2, foo=5)
+        self.assertEqual(result, 4)
+        self.assertEqual(to_be_wrapped.call_count, 4)
