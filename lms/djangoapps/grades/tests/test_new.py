@@ -460,14 +460,14 @@ class TestCourseGradeLogging(SharedModuleStoreTestCase):
         CourseEnrollment.enroll(self.request.user, self.course.id)
 
     def _create_course_grade_and_check_logging(
-        self,
-        factory,
-        log_mock,
-        read_only,
-        subsections_read,
-        subsections_created,
-        blocks_accessed,
-        total_graded_subsections
+            self,
+            factory,
+            log_mock,
+            read_only,
+            subsections_read,
+            subsections_created,
+            blocks_accessed,
+            total_graded_subsections
     ):
         """
         Creates a course grade and asserts that the associated logging
