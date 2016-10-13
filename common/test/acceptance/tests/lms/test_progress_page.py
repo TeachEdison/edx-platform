@@ -242,13 +242,15 @@ class PersistentGradesTest(ProgressPageBaseTest):
         ('rescore_if_higher_button', [(1, 1), (0, 1)], (1, 2)),
     )
     @ddt.unpack
-    def test_grade_update_when_student_state_deleted(
-        self,
-        admin_button,
-        expected_problem_scores,
-        expected_section_score,
+    def test_grade_update_with_admin_adjustments(
+            self,
+            admin_button,
+            expected_problem_scores,
+            expected_section_score,
     ):
-        self._check_progress_page_with_scored_problem()
+        with self._logged_in_session():
+            self._check_progress_page_with_scored_problem()
+        self._change_weight_for_problem()
         self._adjust_student_grade_for_problem(admin_button)
         with self._logged_in_session():
             self.assertEqual(self._get_problem_scores(), expected_problem_scores)

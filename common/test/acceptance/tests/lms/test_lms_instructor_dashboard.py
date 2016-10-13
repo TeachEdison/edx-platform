@@ -525,7 +525,7 @@ class EntranceExamGradeTest(BaseInstructorDashboardTest):
             student email address or username
             Then I should be shown an error message
         """
-        self.entrance_exam_admin.set_student_email_or_username_or_username('non_existing@example.com')
+        self.entrance_exam_admin.set_student_email_or_username('non_existing@example.com')
         self.entrance_exam_admin.skip_entrance_exam_button.click()
 
         #first we have window.confirm
@@ -545,7 +545,7 @@ class EntranceExamGradeTest(BaseInstructorDashboardTest):
             email address or username
             Then I should be shown an table listing all background tasks
         """
-        self.entrance_exam_admin.set_student_email_or_username_or_username(self.student_identifier)
+        self.entrance_exam_admin.set_student_email_or_username(self.student_identifier)
         self.entrance_exam_admin.task_history_button.click()
         self.assertTrue(self.entrance_exam_admin.background_task_history_table.is_present())
 
